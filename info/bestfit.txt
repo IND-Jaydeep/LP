@@ -1,0 +1,147 @@
+The Java program simulates the Best-Fit Memory Allocation Algorithm. This algorithm is a technique in memory management that assigns processes to memory blocks in a way that minimizes wasted space.
+
+Detailed Explanation
+Importing Libraries
+
+java
+Copy code
+import java.util.Scanner;
+The Scanner class is imported for taking user input from the console.
+Class Declaration and bestFit Method
+
+java
+Copy code
+public class BestFit {
+The main class BestFit is created, which contains the bestFit method to implement the algorithm, along with the main method.
+The bestFit Method
+
+java
+Copy code
+static void bestFit(int blockSize[], int m, int processSize[], int n, int remblockSize[])
+This method performs the core logic of the Best-Fit algorithm.
+Parameters:
+blockSize[]: Array holding sizes of each memory block.
+m: Total number of memory blocks.
+processSize[]: Array containing sizes of each process.
+n: Total number of processes.
+remblockSize[]: Array to store the remaining size of each block after allocation.
+Initialization of allocation Array
+
+java
+Copy code
+int allocation[] = new int[n];
+for (int i = 0; i < allocation.length; i++) {
+    allocation[i] = -1;
+}
+An array allocation[] is initialized to keep track of which block each process is allocated to.
+allocation[i] = -1 indicates that process i has not been allocated to any block.
+Iterating Over Each Process
+
+java
+Copy code
+for (int i = 0; i < n; i++) {
+    int bestIdx = -1;
+For each process in processSize[], we initialize bestIdx to -1, indicating no block has been chosen yet for this process.
+The purpose of bestIdx is to store the index of the "best" block that can fit the current process.
+Finding the Best Block
+
+java
+Copy code
+for (int j = 0; j < m; j++) {
+    if (blockSize[j] >= processSize[i]) {
+        if (bestIdx == -1 || blockSize[bestIdx] > blockSize[j]) {
+            bestIdx = j;
+        }
+    }
+}
+The inner for loop iterates over each block to find the best fit for the current process.
+Logic:
+if (blockSize[j] >= processSize[i]): Checks if block j is large enough for process i.
+if (bestIdx == -1 || blockSize[bestIdx] > blockSize[j]): Updates bestIdx if block j is a better fit (i.e., a smaller block that can still accommodate the process).
+This part ensures the smallest possible block is chosen to minimize wasted space.
+Allocating the Best Block
+
+java
+Copy code
+if (bestIdx != -1) {
+    allocation[i] = bestIdx;
+    blockSize[bestIdx] -= processSize[i];
+    remblockSize[i] = blockSize[bestIdx];
+}
+After identifying the best block (bestIdx), we allocate it to process i.
+Steps:
+allocation[i] = bestIdx: Assigns the block index to the process.
+blockSize[bestIdx] -= processSize[i]: Reduces the size of the chosen block by the size of the process.
+remblockSize[i] = blockSize[bestIdx]: Stores the remaining size of the block after allocation.
+Printing Allocation Results
+
+java
+Copy code
+System.out.println("\nProcess No.\tProcess Size\tBlock no.\tRemaining Block Size");
+for (int i = 0; i < n; i++) {
+    System.out.print(" " + (i+1) + "\t\t" + processSize[i] + "\t\t");
+    if (allocation[i] != -1) {
+        System.out.print((allocation[i] + 1) + "\t\t" + remblockSize[i]);
+    } else {
+        System.out.print("Not Allocated" + "\t" + remblockSize[i]);
+    }
+    System.out.println();
+}
+This section outputs the allocation results for each process.
+Output Fields:
+Process No.: Identifier for each process.
+Process Size: Size of each process.
+Block no.: Memory block assigned to each process (or "Not Allocated" if no block could fit the process).
+Remaining Block Size: Size left in each block after allocation.
+main Method
+
+java
+Copy code
+public static void main(String[] args) {
+    int m, n, num;
+    Scanner in = new Scanner(System.in);
+The main method gathers input for the number of blocks, their sizes, the number of processes, and their sizes.
+Variables:
+m: Number of blocks.
+n: Number of processes.
+blockSize[]: Array to store block sizes.
+processSize[]: Array to store process sizes.
+remblockSize[]: Array to track remaining sizes of each block.
+User Input for Block Sizes
+
+java
+Copy code
+for (int i = 0; i < m; i++) {
+    System.out.print("Enter Data " + (i + 1) + ":");
+    num = in.nextInt();
+    blockSize[i] = num;
+}
+This loop takes user input for the sizes of each memory block.
+User Input for Process Sizes
+
+java
+Copy code
+for (int i = 0; i < n; i++) {
+    System.out.print("Enter Data " + (i + 1) + ":");
+    num = in.nextInt();
+    processSize[i] = num;
+}
+Similarly, this loop takes input for each process's size.
+Calling the bestFit Method
+
+java
+Copy code
+bestFit(blockSize, m, processSize, n, remblockSize);
+Calls the bestFit method to perform the allocation.
+Algorithm Summary
+Initialize an empty allocation[] array for processes.
+For each process, iterate over all blocks to find the best (smallest fitting) block.
+If a best block is found, allocate it to the process and update the block's remaining size.
+Print the allocation results showing which block (if any) each process was allocated to and the remaining block size.
+Data Structures Used
+Arrays:
+blockSize[]: Stores the initial sizes of memory blocks.
+processSize[]: Stores sizes of processes.
+allocation[]: Tracks which block each process is allocated to.
+remblockSize[]: Tracks the remaining size of each block after allocation.
+This code efficiently uses a linear search approach to find the smallest fitting block for each process, achieving a simple and effective solution for Best-Fit memory allocation.

@@ -1,0 +1,126 @@
+This Java program implements the First-Come, First-Served (FCFS) scheduling algorithm. I’ll break down each section of the code, explaining the purpose, data structures, and logic in detail.
+
+Code Breakdown
+Importing Libraries:
+
+java
+Copy code
+import java.util.*;
+Imports the java.util package, which includes the Scanner class. This class is used for taking input from the user.
+Class Declaration:
+
+java
+Copy code
+public class FCFS {
+Declares the FCFS class, which contains the main method and the entire program logic for FCFS scheduling.
+Main Method:
+
+java
+Copy code
+public static void main(String[] args) {
+The main method is the entry point of the program.
+Variable Initialization:
+
+java
+Copy code
+Scanner sc = new Scanner(System.in);
+int n;
+float avgtat = 0, avgwt = 0;
+sc is a Scanner object for user input.
+n is the number of processes.
+avgtat and avgwt store the average Turnaround Time (TAT) and Waiting Time (WT), respectively.
+User Input for Number of Processes:
+
+java
+Copy code
+System.out.println("*** First Come First Serve Scheduling ***");
+System.out.print("Enter Number of Process: ");
+n = sc.nextInt();
+Prompts the user to enter the number of processes and assigns this value to n.
+Data Structures for Process Information:
+
+java
+Copy code
+String process[] = new String[n];
+int arrivaltime[] = new int[n];
+int burstTime[] = new int[n];
+int TAT[] = new int[n];
+int waitingTime[] = new int[n];
+int completionTime[] = new int[n];
+Arrays for each process characteristic:
+process[]: Stores process names (like P1, P2, etc.).
+arrivaltime[]: Stores the arrival time of each process.
+burstTime[]: Stores burst times, or the time required by each process to complete.
+TAT[]: Stores Turnaround Times for each process (completion time - arrival time).
+waitingTime[]: Stores Waiting Times for each process (TAT - burst time).
+completionTime[]: Stores Completion Times for each process (cumulative total time to complete each process).
+Input for Arrival and Burst Times:
+
+java
+Copy code
+for (int i = 0; i < n; i++) {
+    process[i] = "P" + (i + 1);
+    System.out.print("Enter Arrival Time for processor " + (i + 1) + ":");
+    arrivaltime[i] = sc.nextInt();
+    System.out.print("Enter Burst Time for processor " + (i + 1) + ": ");
+    burstTime[i] = sc.nextInt();
+}
+Populates the process, arrivaltime, and burstTime arrays based on user input for each process.
+Calculation of Completion Times:
+
+java
+Copy code
+completionTime[0] = burstTime[0];
+for (int i = 0; i < n - 1; i++) {
+    completionTime[i + 1] = completionTime[i] + burstTime[i + 1];
+}
+Sets completionTime[0] as burstTime[0], meaning the first process completes as soon as its burst time elapses.
+For subsequent processes, calculates each process's completion time by adding the current process's burst time to the previous process's completion time.
+Output Table Header:
+
+java
+Copy code
+System.out.println("*** First Come First Serve Scheduling ***");
+System.out.println("Processor\tArrival time\tBurst time\tCompletion Time\t\tTurn around time\tWaiting time");
+System.out.println("----------------------------------------------------------------------------------------------------------");
+Prints a formatted table header for displaying process details.
+Calculating Turnaround Time (TAT) and Waiting Time (WT):
+
+java
+Copy code
+for (int i = 0; i < n; i++) {
+    TAT[i] = completionTime[i] - arrivaltime[i];
+    waitingTime[i] = TAT[i] - burstTime[i];
+    avgtat += TAT[i];
+    avgwt += waitingTime[i];
+Calculates TAT as completionTime[i] - arrivaltime[i] for each process.
+Calculates waitingTime as TAT[i] - burstTime[i] for each process.
+Accumulates avgtat and avgwt to later calculate average TAT and WT.
+Displaying Results for Each Process:
+
+java
+Copy code
+System.out.println(process[i] + "\t\t" + arrivaltime[i] + "ms\t\t" + burstTime[i] + "ms\t\t" + completionTime[i] + "ms\t\t\t" + TAT[i] + "ms\t\t\t" + waitingTime[i] + "ms");
+For each process, prints the arrival time, burst time, completion time, TAT, and WT.
+Calculating and Printing Average TAT and WT:
+
+java
+Copy code
+System.out.println("Average turn around time of processor: " + (avgtat / n) + "ms\nAverage waiting time of processor: " + (avgwt / n) + "ms");
+Calculates and displays the average TAT and WT by dividing the accumulated values by the number of processes.
+Algorithm Explanation
+Initialization: Initialize arrays to hold process details and declare variables for averages.
+
+Process Input: Take input for arrival and burst times for each process.
+
+Completion Time Calculation:
+
+For the first process, set completion time equal to burst time.
+For each subsequent process, add the current burst time to the previous completion time.
+Turnaround and Waiting Time Calculation:
+
+Calculate TAT and WT for each process based on completion, arrival, and burst times.
+Display and Averages:
+
+Print the calculated values and compute the average TAT and WT.
+This code provides a clear implementation of the FCFS scheduling algorithm, which schedules processes based on their arrival order.

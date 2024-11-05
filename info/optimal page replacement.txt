@@ -1,0 +1,155 @@
+The code implements the Optimal Page Replacement Algorithm, a method used in operating systems to manage page replacements in memory. This algorithm replaces the page that will not be needed for the longest time in the future, optimizing the number of page faults in theory. Let's go through the code in detail.
+
+1. Imports and Class Declaration
+java
+Copy code
+import java.util.Scanner; 
+
+public class OptimalPageReplacement { 
+import java.util.Scanner; allows user input to be read from the console.
+public class OptimalPageReplacement declares the main class named OptimalPageReplacement.
+2. Main Method and Variable Initialization
+java
+Copy code
+public static void main(String[] args) { 
+    Scanner sc = new Scanner(System.in); 
+    int noofpages, capacity, ptr = 0, hit = 0, fault = 0; 
+    boolean isFull = false; 
+    double hitRatio, faultRatio; 
+Scanner sc = new Scanner(System.in); creates a Scanner object for reading user input.
+Variables:
+noofpages: The total number of pages the user wants to enter.
+capacity: The number of slots available in the frame.
+ptr: Tracks the position in the frame array where a new page might be replaced.
+hit: Tracks the number of page hits.
+fault: Tracks the number of page faults.
+isFull: Boolean to check if the frame is fully occupied.
+hitRatio, faultRatio: Used for calculating the hit and fault ratios.
+3. Taking User Inputs
+java
+Copy code
+System.out.print("Enter the number of pages you want to enter: "); 
+noofpages = sc.nextInt(); 
+int pages[] = new int[noofpages]; 
+
+for (int i = 0; i < noofpages; i++) { 
+    pages[i] = sc.nextInt(); 
+} 
+System.out.print("Enter the capacity of frame: "); 
+capacity = sc.nextInt(); 
+Asks the user to enter:
+noofpages: Total number of pages to process.
+pages[]: Array of pages, where each entry represents a page request.
+capacity: Number of slots in the frame.
+4. Initializing Frame and Table Arrays
+java
+Copy code
+int frame[] = new int[capacity]; 
+int table[][] = new int[noofpages][capacity]; 
+
+for (int i = 0; i < capacity; i++) { 
+    frame[i] = -1; 
+} 
+frame[]: Array representing the memory frame, initialized with -1 to indicate empty slots.
+table[][]: A 2D array used to store the state of the frame after each page request, later used for displaying the frame status.
+5. Processing Pages Using Optimal Replacement Logic
+java
+Copy code
+System.out.println("----------------------------------------------------------------------");  
+for (int i = 0; i < noofpages; i++) { 
+    int search = -1; 
+    for (int j = 0; j < capacity; j++) { 
+        if (frame[j] == pages[i]) { 
+            search = j; 
+            hit++; 
+            System.out.printf("%4s", "H"); 
+            break; 
+        }  
+    } 
+    if (search == -1) { 
+        if (isFull) { 
+            int[] index = new int[capacity]; 
+            boolean[] index_flag = new boolean[capacity]; 
+            for (int j = i + 1; j < noofpages; j++) { 
+                for (int k = 0; k < capacity; k++) { 
+                    if ((pages[j] == frame[k]) && (!index_flag[k])) { 
+                        index[k] = j; 
+                        index_flag[k] = true; 
+                        break; 
+                    }  
+                }  
+            } 
+            int max = index[0]; 
+            ptr = 0; 
+            if (max == 0) 
+                max = 200; 
+            for (int j = 0; j < capacity; j++) { 
+                if (index[j] == 0) 
+                    index[j] = 200; 
+                if (index[j] > max) { 
+                    max = index[j]; 
+                    ptr = j; 
+                }  
+            }  
+        } 
+        frame[ptr] = pages[i]; 
+        fault++; 
+        System.out.printf("%4s", "F"); 
+        if (!isFull) { 
+            ptr++; 
+            if (ptr == capacity) { 
+                ptr = 0; 
+                isFull = true; 
+            }  
+        }  
+    } 
+    System.arraycopy(frame, 0, table[i], 0, capacity);  
+} 
+Outer Loop (for loop over noofpages): Iterates through each page in the pages array.
+search: Set to -1 initially, indicating that the page has not been found in the frame.
+Inner Loop: Searches for the current page (pages[i]) in the frame.
+If found (frame[j] == pages[i]), it sets search to the index, increments hit, and outputs "H" (hit). No replacement occurs.
+Page Fault Handling (if search == -1):
+If the frame is full (isFull is true), the optimal replacement logic is applied:
+index[]: Stores the index of the next appearance of each page currently in the frame, starting from the current position i + 1.
+index_flag[]: Tracks if the next appearance index has been set for each page in the frame.
+Future Reference Search: For each page in frame, it finds the next reference to the page in pages[]. If a page is not found later in pages[], it is given a high value (200) to make it the candidate for replacement.
+Finding Optimal Replacement:
+The page with the farthest future reference (max) is selected for replacement, and ptr is set to that page's index.
+The page is then inserted into frame[ptr], and fault is incremented with "F" printed for a fault.
+If the frame is not yet full, ptr is incremented and, when it reaches capacity, isFull is set to true.
+6. Displaying Frame Status After Each Page Request
+java
+Copy code
+System.out.println("\n----------------------------------------------------------------------");  
+for (int i = 0; i < capacity; i++) { 
+    for (int j = 0; j < noofpages; j++) 
+        System.out.printf("%3d ", table[j][i]); 
+    System.out.println();   
+} 
+System.out.println("----------------------------------------------------------------------");  
+Prints the frame's state after processing each page request, allowing visualization of how pages are replaced over time.
+7. Calculating and Displaying Hit and Fault Ratios
+java
+Copy code
+hitRatio = ((double)hit / noofpages) * 100; 
+faultRatio = ((double)fault / noofpages) * 100; 
+System.out.println("Page Fault: " + fault + "\nPage Hit: " + hit); 
+System.out.printf("Hit Ratio:%.2f \nFault Ratio:%.2f ", hitRatio, faultRatio); 
+Calculates and prints the hitRatio and faultRatio based on the total number of page requests.
+Explanation of Optimal Page Replacement Algorithm
+Algorithm Steps:
+Initialize an empty frame with a fixed capacity.
+For each page in pages[]:
+Check if the page is already in the frame (a hit).
+If the page is not in the frame (a fault):
+If the frame is full, apply the optimal replacement strategy:
+For each page in the frame, determine when it will next be referenced in pages[].
+Replace the page that will not be needed for the longest time in the future.
+If the frame is not yet full, insert the page at the next available position.
+Data Structures:
+Array frame[]: Holds the pages currently in memory.
+2D Array table[][]: Stores the state of the frame after each page request for display.
+Array index[]: Used to track the future references for pages in the frame.
+Array index_flag[]: Flags used to ensure only the first future reference is recorded.
+The program effectively simulates the optimal page replacement strategy, showing the sequence of faults and hits and calculating the hit and fault ratios based on user input.

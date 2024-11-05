@@ -1,0 +1,15 @@
+Arrival time: The time at which process enters ready queue or state.
+Burst time:  The time required by process to get execute on CPU.
+Completion time:  The time at which process complete its execution.
+Turnaround time: {Completion time - Arrival time}
+Waiting time: {Turn Around time - Burst time}
+Response time: {The time at which a process get first time} - {Arrival time}
+************************************************************************************
+there is gantt chart for all process 
+in round robin there are 2 queues in gantt chart 1.ready queue
+                                                 2.running queue
+******************************************************************************
+First Fit: Allocate the first hole that is big enough.
+Next Fit: Same as first fit  but start search always from last allocated hole.
+Best Fit: Allocate the smallest hole that is big enough.
+Worst fit: Allocate the largest hole.

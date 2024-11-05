@@ -1,0 +1,63 @@
+Here’s a detailed analysis of the Round Robin (RR) Scheduling code, with a breakdown of each section and the algorithm used.
+
+Code Analysis
+Class: Process
+This class defines attributes and represents each process with:
+
+processID: Unique identifier for the process.
+arrival: Time when the process arrives in the system.
+burst: Burst time (execution time) required by the process.
+remainingTime: Remaining burst time as the process executes in quantum intervals.
+waiting: Total waiting time in the ready queue.
+turnAround: Turnaround time from arrival to completion.
+finish: A flag indicating whether the process has finished (1 if complete, 0 if not).
+completionTime: Actual time when the process completes execution.
+Main Class: RRScheduling
+The main class simulates the RR scheduling algorithm, taking user input, calculating each process's completion time, waiting time, and turnaround time, then computing the average metrics.
+
+Initialization
+Input Parameters:
+The number of processes (n).
+Each process’s arrival and burst times.
+Quantum: Time slice allocated to each process in a single round.
+Initialize Variables:
+sumBurst: Total burst time across all processes, used to control the main execution loop.
+avgWAT and avgTAT: Average waiting and turnaround times, calculated at the end.
+Sorting Processes by Arrival Time
+The code sorts processes based on their arrival times to handle the first-arrived process first.
+
+Main Loop for Round Robin Execution
+Queue Setup: A queue (q) tracks the processes that are ready to execute.
+Loop Execution:
+The loop continues until all processes have completed (i.e., when total burst time is reached).
+Process Selection: The next process (p[i]) is dequeued.
+Time Quantum Check:
+If remainingTime of p[i] is less than or equal to the quantum, the process completes in this round.
+Update Metrics: Update completionTime, waiting, and turnAround for p[i].
+Add to Queue: Processes arriving before or during the current time are added to the queue if they aren’t already completed or in the queue.
+Otherwise, the process executes for the quantum, and remainingTime is reduced by the quantum.
+Add Back: Process p[i] is re-added to the queue if it hasn’t completed.
+Add New Arrivals: Any other processes arriving during this interval are added to the queue if not already included.
+Calculation of Waiting and Turnaround Times
+After completion:
+
+Turnaround Time (TAT): completionTime - arrival for each process.
+Waiting Time (WAT): TAT - burst.
+Display and Output
+The program displays:
+
+Each process’s ID, arrival time, burst time, completion time, turnaround time, and waiting time.
+Average Waiting Time and Average Turnaround Time for all processes.
+RR Scheduling Algorithm Explanation
+Round Robin Scheduling is a preemptive algorithm where each process is given a time quantum (slice of CPU time). If the process completes within this quantum, it finishes; otherwise, it goes back to the queue.
+Process Execution Order:
+Processes are enqueued in the order of their arrival.
+Each process executes for either the full quantum or its remaining burst time.
+Queue Management:
+Processes not completing in a quantum are re-added to the queue.
+New processes arriving during execution are also added to the queue.
+Sample Output Walkthrough
+Given sample input data, the output will show each process's calculated metrics:
+
+Processor, Arrival time, Burst time, Completion time, Turnaround time, Waiting time for each process.
+Average Turnaround Time and Average Waiting Time calculated across all processes.

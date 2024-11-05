@@ -1,0 +1,137 @@
+This Java program demonstrates the First-Fit Memory Allocation Algorithm. In this memory allocation method, processes are allocated to the first available memory block that is large enough to accommodate them.
+
+Code Analysis
+Importing Libraries
+
+java
+Copy code
+import java.util.Scanner;
+The Scanner class is used to take input from the user.
+Class Declaration and firstFit Method
+
+java
+Copy code
+public class FirstFit {
+Defines the main class FirstFit, which contains the firstFit method and the main method.
+The firstFit Method
+
+java
+Copy code
+static void firstFit(int blockSize[], int m, int processSize[], int n, int remblockSize[])
+This method executes the core First-Fit algorithm.
+Parameters:
+blockSize[]: Array containing the sizes of each memory block.
+m: Number of memory blocks.
+processSize[]: Array containing sizes of each process.
+n: Number of processes.
+remblockSize[]: Array for storing the remaining size of each block after allocation.
+Initialization of allocation Array
+
+java
+Copy code
+int allocation[] = new int[n];
+for (int i = 0; i < allocation.length; i++) {
+    allocation[i] = -1;
+}
+The allocation[] array tracks which block each process is assigned to.
+Initially, all values in allocation[] are set to -1, indicating that no process has been allocated.
+Outer Loop: Iterating Over Each Process
+
+java
+Copy code
+for (int i = 0; i < n; i++) {
+This loop iterates through each process in processSize[] to attempt allocation.
+Inner Loop: Finding the First Available Block
+
+java
+Copy code
+for (int j = 0; j < m; j++) {
+    if (blockSize[j] >= processSize[i]) {
+        allocation[i] = j;
+        blockSize[j] -= processSize[i];
+        remblockSize[i] = blockSize[j];
+        break;
+    }
+}
+For each process, this loop iterates over all memory blocks.
+Logic:
+if (blockSize[j] >= processSize[i]): Checks if block j has enough space for process i.
+allocation[i] = j: Assigns the first suitable block (block j) to the process.
+blockSize[j] -= processSize[i]: Reduces the size of block j by the size of the process.
+remblockSize[i] = blockSize[j]: Stores the remaining size of block j after allocation.
+break;: Exits the inner loop after finding the first fitting block, as per the First-Fit approach.
+Printing Allocation Results
+
+java
+Copy code
+System.out.println("\nProcess No.\tProcess Size\tBlock no.\tRemaining Block Size");
+for (int i = 0; i < n; i++) {
+    System.out.print(" " + (i + 1) + "\t\t" + processSize[i] + "\t\t");
+    if (allocation[i] != -1) {
+        System.out.print((allocation[i] + 1) + "\t\t" + remblockSize[i]);
+    } else {
+        System.out.print("Not Allocated" + "\t" + remblockSize[i]);
+    }
+    System.out.println();
+}
+This section prints the results of the memory allocation for each process.
+Output Fields:
+Process No.: Identifier for each process.
+Process Size: Size of each process.
+Block no.: The memory block to which the process is allocated (or "Not Allocated" if no suitable block is found).
+Remaining Block Size: Shows the remaining size in each block after allocation.
+main Method
+
+java
+Copy code
+public static void main(String[] args) {
+    int m, n, num;
+    Scanner in = new Scanner(System.in);
+The main method takes user input for memory block and process details.
+User Input for Block Sizes
+
+java
+Copy code
+for (int i = 0; i < m; i++) {
+    System.out.print("Enter Data " + (i + 1) + ":");
+    num = in.nextInt();
+    blockSize[i] = num;
+}
+Takes user input for the sizes of each memory block.
+User Input for Process Sizes
+
+java
+Copy code
+for (int i = 0; i < n; i++) {
+    System.out.print("Enter Data " + (i + 1) + ":");
+    num = in.nextInt();
+    processSize[i] = num;
+}
+Takes user input for the sizes of each process.
+Calling the firstFit Method
+
+java
+Copy code
+firstFit(blockSize, m, processSize, n, remblockSize);
+Executes the firstFit method to perform the memory allocation.
+Algorithm Summary
+Initialize an empty allocation[] array to keep track of assigned blocks.
+For each process, scan each memory block to find the first block with sufficient space.
+If a suitable block is found, allocate the block to the process, update the block's remaining size, and record it in remblockSize[].
+Print the allocation results to display which block (if any) each process was allocated and the remaining block size.
+Data Structures Used
+Arrays:
+blockSize[]: Stores the initial sizes of memory blocks.
+processSize[]: Stores sizes of each process.
+allocation[]: Tracks which block each process is allocated to.
+remblockSize[]: Stores the remaining size of each block after allocation.
+Key Difference from Best-Fit Algorithm
+First-Fit: Allocates the first block that can accommodate the process.
+Best-Fit: Searches all blocks to find the smallest block that can fit the process, aiming to minimize wasted space.
+This First-Fit approach is straightforward and often faster than Best-Fit, as it stops searching after finding the first fitting block, making it efficient for cases where speed is a priority over optimal space utilization.
+
+
+
+
+
+

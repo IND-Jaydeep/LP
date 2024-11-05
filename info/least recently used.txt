@@ -1,0 +1,147 @@
+The code implements the Least Recently Used (LRU) Page Replacement Algorithm, commonly used in operating systems to manage memory pages. In this algorithm, when a page fault occurs and a replacement is necessary, the page that hasn’t been used for the longest time is evicted. Let’s go through the code in detail.
+
+Code Analysis and Explanation
+1. Import and Class Declaration
+java
+Copy code
+import java.util.*; 
+
+public class LeastRecentlyUsed { 
+import java.util.*; imports necessary classes from the Java utility library, including ArrayList.
+public class LeastRecentlyUsed declares the main class.
+2. Main Method and Variable Initialization
+java
+Copy code
+public static void main(String[] args) { 
+    Scanner sc = new Scanner(System.in); 
+    ArrayList<Integer> arr = new ArrayList<>(); 
+    int noofpages, capacity, hit = 0, fault = 0, index = 0; 
+    boolean isFull = false; 
+    double hitRatio, faultRatio; 
+Variables:
+noofpages: Number of pages entered by the user.
+capacity: Capacity of the frame (i.e., the number of slots available in memory).
+hit: Tracks the number of page hits.
+fault: Tracks the number of page faults.
+index: Index used to manage page replacement.
+isFull: Boolean to check if the frame is full.
+hitRatio, faultRatio: For calculating hit and fault ratios.
+3. User Input
+java
+Copy code
+System.out.print("Enter the number of pages you want to enter: "); 
+noofpages = sc.nextInt(); 
+int pages[] = new int[noofpages]; 
+
+for (int i = 0; i < noofpages; i++) { 
+    pages[i] = sc.nextInt(); 
+} 
+System.out.print("Enter the capacity of frame: "); 
+capacity = sc.nextInt(); 
+Takes input from the user:
+noofpages: Total number of pages to be processed.
+pages[]: Array of pages requested by the user.
+capacity: The number of slots available in the frame.
+4. Initializing Frame and Table Arrays
+java
+Copy code
+int frame[] = new int[capacity]; 
+int table[][] = new int[noofpages][capacity]; 
+
+for (int i = 0; i < capacity; i++) { 
+    frame[i] = -1; 
+} 
+frame[]: Array representing the memory frame, initialized to -1 indicating empty slots.
+table[][]: 2D array to store the state of the frame after each page request, used for display purposes.
+5. Processing Pages Using LRU Replacement Logic
+java
+Copy code
+System.out.println("----------------------------------------------------------------------");  
+for (int i = 0; i < noofpages; i++) { 
+    if (arr.contains(pages[i])) { 
+        arr.remove((Integer) pages[i]); 
+    } 
+    arr.add(pages[i]); 
+    int search = -1; 
+    for (int j = 0; j < capacity; j++) { 
+        if (frame[j] == pages[i]) { 
+            search = j; 
+            hit++; 
+            System.out.printf("%4s", "H"); 
+            break; 
+        } 
+    } 
+    if (search == -1) { 
+        if (isFull) { 
+            int min_loc = noofpages; 
+            for (int j = 0; j < capacity; j++) { 
+                if (arr.contains(frame[j])) { 
+                    int temp = arr.indexOf(frame[j]); 
+                    if (temp < min_loc) { 
+                        min_loc = temp; 
+                        index = j; 
+                    }
+                }
+            }
+        } 
+        frame[index] = pages[i]; 
+        fault++; 
+        System.out.printf("%4s", "F"); 
+        index++; 
+        if (index == capacity) { 
+            index = 0; 
+            isFull = true; 
+        }
+    } 
+    System.arraycopy(frame, 0, table[i], 0, capacity); 
+}
+Outer Loop (over noofpages): Processes each page in pages.
+ArrayList arr: Keeps track of pages in the order they were recently used.
+If the page is already in arr, it is removed and re-added at the end (indicating recent use).
+Inner Loop: Searches for the current page (pages[i]) in the frame.
+If found, search is set to the page’s position, hit is incremented, and "H" (hit) is printed.
+Page Fault Handling (if search == -1):
+If the frame is full (isFull == true), LRU replacement logic is applied:
+LRU Selection:
+Finds the page in frame with the lowest recent index in arr (indicating it was least recently used).
+Sets index to this position for replacement.
+Updating Frame and Fault Count:
+Replaces the page at frame[index] with the current page (pages[i]), increments fault, and prints "F" (fault).
+Updating Frame Status:
+If the frame is not yet full, index is incremented and, when index equals capacity, isFull is set to true.
+Saving State:
+System.arraycopy(frame, 0, table[i], 0, capacity); saves the current state of the frame to table for later display.
+6. Displaying Frame Status After Each Page Request
+java
+Copy code
+System.out.println("\n----------------------------------------------------------------------");  
+for (int i = 0; i < capacity; i++) { 
+    for (int j = 0; j < noofpages; j++) 
+        System.out.printf("%3d ", table[j][i]); 
+    System.out.println(); 
+} 
+System.out.println("----------------------------------------------------------------------");  
+Prints the state of the frame after each page request, displaying how pages are replaced over time.
+7. Calculating and Displaying Hit and Fault Ratios
+java
+Copy code
+hitRatio = ((double)hit / noofpages) * 100; 
+faultRatio = ((double)fault / noofpages) * 100; 
+System.out.println("Page Fault: " + fault + "\nPage Hit: " + hit); 
+System.out.printf("Hit Ratio:%.2f \nFault Ratio:%.2f ", hitRatio, faultRatio); 
+Calculates and prints hitRatio and faultRatio based on the total number of page requests.
+Explanation of Least Recently Used (LRU) Page Replacement Algorithm
+Algorithm Steps:
+Initialize an empty frame with a fixed capacity.
+For each page in pages[]:
+Check if the page is already in the frame (a hit).
+If the page is not in the frame (a fault):
+If the frame is full, use the LRU replacement strategy:
+Find the page in frame that was least recently used.
+Replace this page with the new page.
+If the frame is not yet full, simply add the new page.
+Data Structures:
+ArrayList arr: Keeps track of the order in which pages are used, facilitating the LRU replacement by identifying the oldest page.
+Array frame[]: Holds the pages currently in memory.
+2D Array table[][]: Stores the state of frame after each page request for display purposes.
+The program effectively simulates the Least Recently Used page replacement algorithm, allowing users to see the sequence of faults and hits and calculating the hit and fault ratios based on user input.

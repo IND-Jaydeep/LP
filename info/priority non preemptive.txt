@@ -1,0 +1,167 @@
+
+This Java code demonstrates a non-preemptive Priority Scheduling algorithm. The priority scheduling algorithm assigns a priority level to each process, and processes with higher priority (lower numerical value) are executed first. Here’s a breakdown of each part of the code, with details on data structures and logic.
+
+Code Breakdown
+Importing Libraries:
+
+java
+Copy code
+import java.util.*;
+Imports the java.util package, which includes the Scanner class for taking input from the user.
+Class Declaration:
+
+java
+Copy code
+class PriorityScheduling {
+Declares the PriorityScheduling class, which includes the main method containing the program logic.
+Main Method:
+
+java
+Copy code
+public static void main(String[] args) {
+The main method is the entry point of the program.
+User Input and Variable Initialization:
+
+java
+Copy code
+System.out.println("*** Priority Scheduling (Non Preemptive) ***");
+System.out.print("Enter Number of Process: ");
+Scanner sc = new Scanner(System.in);
+int n = sc.nextInt();
+Displays a message indicating the scheduling type.
+Prompts the user to enter the number of processes (n).
+Arrays to Store Process Information:
+
+java
+Copy code
+String process[] = new String[n];
+int arrivaltime[] = new int[n];
+int burstTime[] = new int[n];
+int completionTime[] = new int[n];
+int priority[] = new int[n];
+Arrays to store key attributes:
+process[]: Stores process identifiers like P1, P2, etc.
+arrivaltime[]: Arrival times of each process.
+burstTime[]: Time required for each process to complete.
+completionTime[]: Time when each process finishes.
+priority[]: Priority levels assigned to each process.
+Additional Variables for Calculations:
+
+java
+Copy code
+int totalWT = 0;
+int totalTAT = 0;
+double avgWT;
+double avgTAT;
+totalWT and totalTAT accumulate the total waiting time and turnaround time.
+avgWT and avgTAT store the average waiting and turnaround times.
+Process Input (Arrival Time, Burst Time, Priority):
+
+java
+Copy code
+for (int i = 0; i < n; i++) {
+    process[i] = "P" + (i + 1);
+    System.out.print("Enter Arrival Time for processor " + (i + 1) + ":");
+    arrivaltime[i] = sc.nextInt();
+    System.out.print("Enter Burst Time for processor " + (i + 1) + " : ");
+    burstTime[i] = sc.nextInt();
+    System.out.print("Enter Priority for " + (i + 1) + " process: ");
+    priority[i] = sc.nextInt();
+}
+Populates arrays with user input values for each process:
+Arrival time, burst time, and priority level are taken for each process.
+Process names are generated dynamically.
+Sorting Based on Priority (Bubble Sort):
+
+java
+Copy code
+int temp;
+String temp2;
+for (int i = 0; i < n - 1; i++) {
+    for (int j = 0; j < n - 1; j++) {
+        if (priority[j] > priority[j + 1]) {
+            temp = priority[j];
+            priority[j] = priority[j + 1];
+            priority[j + 1] = temp;
+
+            temp = burstTime[j];
+            burstTime[j] = burstTime[j + 1];
+            burstTime[j + 1] = temp;
+
+            temp = arrivaltime[j];
+            arrivaltime[j] = arrivaltime[j + 1];
+            arrivaltime[j + 1] = temp;
+
+            temp2 = process[j];
+            process[j] = process[j + 1];
+            process[j + 1] = temp2;
+        }
+    }
+}
+Bubble Sort is used to reorder processes based on priority (ascending order).
+Swaps priority, burstTime, arrivaltime, and process arrays to ensure each attribute aligns after sorting.
+Calculating Completion Times:
+
+java
+Copy code
+int TAT[] = new int[n + 1];
+int waitingTime[] = new int[n + 1];
+completionTime[0] = burstTime[0];
+for (int i = 0; i < n - 1; i++) {
+    completionTime[i + 1] = completionTime[i] + burstTime[i + 1];
+}
+completionTime[0] is initialized to burstTime[0], meaning the first process finishes after its burst time elapses.
+For each subsequent process, the completion time is calculated by adding the current burst time to the previous process’s completion time.
+Output Table Header:
+
+java
+Copy code
+System.out.println("*** Priority Scheduling (Non Preemptive) ***");
+System.out.println("Processor\tArrival time\tBurst time\tCompletion Time\t\tTurn around time\tWaiting time");
+System.out.println("----------------------------------------------------------------------------------------------------------");
+Prints a formatted header to display the scheduling results.
+Calculating Turnaround Time (TAT) and Waiting Time (WT):
+
+java
+Copy code
+for (int i = 0; i < n; i++) {
+    TAT[i] = completionTime[i] - arrivaltime[i];
+    waitingTime[i] = TAT[i] - burstTime[i];
+    System.out.println(process[i] + "\t\t" + arrivaltime[i] + "ms\t\t" + burstTime[i] + "ms\t\t" + completionTime[i] + "ms\t\t\t" + TAT[i] + "ms\t\t\t" + waitingTime[i] + "ms");
+
+    totalTAT += (waitingTime[i] + burstTime[i]);
+    totalWT += waitingTime[i];
+}
+Calculates TAT as completionTime[i] - arrivaltime[i] for each process.
+Calculates waitingTime as TAT[i] - burstTime[i].
+Accumulates totalTAT and totalWT to calculate average values later.
+Prints each process’s arrival time, burst time, completion time, TAT, and WT.
+Calculating and Displaying Average TAT and WT:
+
+java
+Copy code
+avgWT = totalWT / (double) n;
+avgTAT = totalTAT / (double) n;
+System.out.println("\nAverage Waiting Time: " + avgWT);
+System.out.println("Average Turn Around Time: " + avgTAT);
+Computes avgWT and avgTAT by dividing the total values by the number of processes (n).
+Displays the average waiting time and turnaround time.
+Algorithm Explanation
+Input Collection:
+
+Collect arrival time, burst time, and priority for each process.
+Sorting:
+
+Use Bubble Sort to arrange processes based on priority, with higher priority (lower numerical value) processes first.
+Completion Time Calculation:
+
+Set the first completion time to the burst time of the first process.
+For each subsequent process, calculate completion time by adding the burst time to the previous completion time.
+Turnaround and Waiting Time Calculation:
+
+Calculate TAT as completion time - arrival time.
+Calculate WT as TAT - burst time.
+Display and Averages:
+
+Display the scheduling results for each process and calculate average TAT and WT.
+This code implements a non-preemptive priority scheduling algorithm, where processes execute based on their priority.

@@ -1,0 +1,139 @@
+Here’s a detailed breakdown of the Next-Fit Memory Allocation code in Java.
+
+Purpose of the Code
+This Java program demonstrates the Next-Fit Memory Allocation Algorithm, a variation of the First-Fit method. In the Next-Fit algorithm, each process is allocated to the next suitable memory block, starting from the last allocated position. Once it reaches the end of the block list, it wraps back to the beginning.
+
+Code Analysis
+Importing Libraries
+
+java
+Copy code
+import java.util.Arrays;
+import java.util.Scanner;
+Arrays is used for array-related utility functions (like Arrays.fill()).
+Scanner is used to take input from the user.
+Class Declaration and NextFit Method
+
+java
+Copy code
+public class NextFit {
+Defines the main class NextFit, which contains the NextFit method and the main method.
+The NextFit Method
+
+java
+Copy code
+static void NextFit(int blockSize[], int m, int processSize[], int n, int remblockSize[]) {
+This method executes the core Next-Fit algorithm.
+Parameters:
+blockSize[]: Array containing the sizes of each memory block.
+m: Number of memory blocks.
+processSize[]: Array containing sizes of each process.
+n: Number of processes.
+remblockSize[]: Array to store the remaining size of each block after allocation.
+Initialization of allocation Array
+
+java
+Copy code
+int allocation[] = new int[n], j = 0;
+Arrays.fill(allocation, -1);
+allocation[]: Keeps track of which block each process is assigned to. It is initialized with -1 for each element, indicating that no process is allocated initially.
+j: Keeps track of the last allocated block index.
+Outer Loop: Iterating Over Each Process
+
+java
+Copy code
+for (int i = 0; i < n; i++) {
+This loop iterates over each process in processSize[] to attempt allocation.
+Inner Loop: Finding the Next Available Block
+
+java
+Copy code
+int count = 0;
+while (count < m) {
+    count++;
+    if (blockSize[j] >= processSize[i]) {
+        allocation[i] = j;
+        blockSize[j] -= processSize[i];
+        remblockSize[i] = blockSize[j];
+        break;
+    }
+    j = (j + 1) % m;
+    count += 1;
+}
+Purpose: For each process, this loop checks each block starting from the last allocated position (j).
+Logic:
+count < m: Ensures the loop doesn’t exceed the number of blocks.
+if (blockSize[j] >= processSize[i]): Checks if the current block (j) has enough space for process i.
+allocation[i] = j: Allocates block j to process i if it fits.
+blockSize[j] -= processSize[i]: Reduces the size of block j by the size of the process.
+remblockSize[i] = blockSize[j]: Stores the remaining size of block j after allocation.
+break;: Stops searching once a suitable block is found for the current process.
+j = (j + 1) % m: Moves to the next block circularly, ensuring that when it reaches the last block, it starts over from the beginning.
+Printing Allocation Results
+
+java
+Copy code
+System.out.println("\nProcess No.\tProcess Size\tBlock no.\tRemaining Block Size");
+for (int i = 0; i < n; i++) {
+    System.out.print(i + 1 + "\t\t" + processSize[i] + "\t\t");
+    if (allocation[i] != -1) {
+        System.out.print((allocation[i] + 1) + "\t\t" + remblockSize[i]);
+    } else {
+        System.out.print("Not Allocated" + "\t" + remblockSize[i]);
+    }
+    System.out.println("");
+}
+This section prints the results of the memory allocation for each process.
+Output Fields:
+Process No.: Identifier for each process.
+Process Size: Size of each process.
+Block no.: The memory block to which the process is allocated (or "Not Allocated" if no suitable block is found).
+Remaining Block Size: Shows the remaining size in each block after allocation.
+main Method
+
+java
+Copy code
+public static void main(String[] args) {
+The main method takes user input for memory block and process details and calls the NextFit method.
+User Input for Block Sizes
+
+java
+Copy code
+for (int i = 0; i < m; i++) {
+    System.out.print("Enter Data " + (i + 1) + ":");
+    num = in.nextInt();
+    blockSize[i] = num;
+}
+Takes user input for each memory block size.
+User Input for Process Sizes
+
+java
+Copy code
+for (int i = 0; i < n; i++) {
+    System.out.print("Enter Data " + (i + 1) + ":");
+    num = in.nextInt();
+    processSize[i] = num;
+}
+Takes user input for each process size.
+Calling the NextFit Method
+
+java
+Copy code
+NextFit(blockSize, m, processSize, n, remblockSize);
+Executes the NextFit method to perform the memory allocation.
+Algorithm Summary
+Initialize an empty allocation[] array to keep track of assigned blocks and set j to the last allocated block index.
+For each process, start checking memory blocks from the last allocated position.
+If a suitable block is found, allocate it to the process, update the block's remaining size, and record it in remblockSize[].
+Print the allocation results to display which block (if any) each process was allocated and the remaining block size.
+Data Structures Used
+Arrays:
+blockSize[]: Stores the initial sizes of memory blocks.
+processSize[]: Stores sizes of each process.
+allocation[]: Tracks which block each process is allocated to.
+remblockSize[]: Stores the remaining size of each block after allocation.
+Key Difference from First-Fit and Best-Fit Algorithms
+Next-Fit: Starts from the last allocated block for each process, allocating in a circular manner. This approach minimizes fragmentation in certain scenarios but may leave more memory unutilized if block distribution is uneven.
+First-Fit: Always starts from the beginning of the block list.
+Best-Fit: Searches all blocks to find the smallest one that fits, which can lead to fragmentation but may better utilize smaller blocks.
+This Next-Fit approach can be faster than Best-Fit and reduces repeated allocation starting from the beginning of the block list.

@@ -1,0 +1,152 @@
+Here’s a detailed explanation of the code, including a breakdown of each part, and the algorithmic steps followed for implementing Shortest Job First (SJF) Scheduling in a preemptive mode.
+
+Code Breakdown and Explanation
+Package and Class Setup
+
+java
+Copy code
+import java.util.*;
+public class SJF  
+Imports the java.util.* package, which includes utility classes, particularly Scanner for input.
+Defines the main class SJF, representing the Shortest Job First scheduling algorithm.
+Main Method
+
+java
+Copy code
+public static void main (String args[])
+The program's entry point. All scheduling logic and computations are implemented here.
+Variable Declarations and Inputs
+
+java
+Copy code
+Scanner sc = new Scanner(System.in);
+System.out.println("*** Shortest Job First Scheduling (Preemptive) ***");
+System.out.print("Enter no of process:");
+int n = sc.nextInt();
+Initializes Scanner for user input.
+Takes the number of processes n from the user.
+Arrays and Variables for Process Data
+
+java
+Copy code
+String process[] = new String[n];
+int arrivaltime[] = new int[n];
+int burstTime[] = new int[n];
+int completionTime[] = new int[n];
+int TAT[] = new int[n];
+int waitingTime[] = new int[n];
+int flag[] = new int[n];
+int remburstTime[] = new int[n];
+Arrays to store:
+process[]: Process IDs.
+arrivaltime[]: Arrival times for each process.
+burstTime[]: Burst times (total time each process takes).
+completionTime[]: Times when each process completes execution.
+TAT[]: Turnaround times for each process.
+waitingTime[]: Waiting times for each process.
+flag[]: Marks a process as completed or not.
+remburstTime[]: Remaining burst times, to handle the preemption.
+Additional Counters and Summation Variables
+
+java
+Copy code
+int st = 0, tot = 0;
+float avgwt = 0, avgta = 0;
+st tracks the current system time.
+tot counts the total number of completed processes.
+avgwt and avgta will hold total waiting and turnaround times to calculate averages later.
+Input Loop for Arrival and Burst Times
+
+java
+Copy code
+for (int i = 0; i < n; i++) {
+    process[i] = "P" + (i+1);
+    System.out.print("Enter Arrival Time for processor " + (i+1) + ":");
+    arrivaltime[i] = sc.nextInt();
+    System.out.print("Enter Burst Time for processor " + (i+1) + ": ");
+    burstTime[i] = sc.nextInt();
+    remburstTime[i] = burstTime[i];
+    flag[i] = 0;
+}
+Loops through each process to gather:
+Arrival time.
+Burst time.
+Sets remburstTime[i] to the burst time as initial remaining burst time.
+Sets flag[i] to 0 indicating each process is initially incomplete.
+SJF Scheduling Logic (Preemptive)
+
+java
+Copy code
+while(true){
+    int min = 99, c = n;
+    if (tot == n) { break; }
+Continues until all processes (tot == n) are complete.
+min is initialized to a high value (99) to find the shortest burst time in each loop.
+c holds the index of the selected process to execute.
+Process Selection and Preemption Logic
+
+java
+Copy code
+for(int i = 0; i < n; i++) {
+    if ((arrivaltime[i] <= st) && (flag[i] == 0) && (burstTime[i] < min)) {
+        min = burstTime[i];
+        c = i;
+    }
+}
+Finds the process with:
+Arrival time <= current system time st.
+Incomplete status (flag[i] == 0).
+Minimum remaining burst time.
+If such a process is found, c stores its index.
+Execution and Completion Check
+
+java
+Copy code
+if (c == n) { 
+    st++; 
+} else { 
+    burstTime[c]--; 
+    st++; 
+    if (burstTime[c] == 0) { 
+        completionTime[c] = st;
+        flag[c] = 1;
+        tot++;
+    }
+}
+If no process is ready (c == n), it increments the system time.
+Otherwise:
+Decreases burstTime[c] by 1 unit (preemptive execution).
+Updates system time.
+If burstTime[c] reaches 0, it sets completionTime[c] to the current time, marks the process as complete (flag[c] = 1), and increments tot.
+Calculating Turnaround and Waiting Times
+
+java
+Copy code
+for(int i = 0; i < n; i++) {
+    TAT[i] = completionTime[i] - arrivaltime[i];
+    waitingTime[i] = TAT[i] - remburstTime[i];
+    avgwt += waitingTime[i];
+    avgta += TAT[i];
+}
+Computes TAT[i] (Turnaround Time) as the time difference between completionTime and arrivalTime.
+Calculates waitingTime[i] by subtracting the initial burst time from TAT[i].
+Adds waitingTime[i] and TAT[i] to avgwt and avgta for average calculation later.
+Output Display
+
+java
+Copy code
+System.out.println("Processor\tArrival time\tBrust time\tCompletion Time\t\tTurn around time\tWaiting time");
+for(int i = 0; i < n; i++) {
+    System.out.println(process[i] + "\t\t" + arrivaltime[i] + "ms\t\t" + remburstTime[i] + "ms\t\t" + completionTime[i] + "ms\t\t" + TAT[i] + "ms\t\t" + waitingTime[i] + "ms");
+}
+System.out.println("\nAverage turn around time is " + (float)(avgta/n));
+System.out.println("Average waiting time is " + (float)(avgwt/n));
+Displays the process details including arrival time, burst time, completion time, turnaround time, and waiting time.
+Prints average turnaround and waiting times.
+Algorithm Summary
+Input Phase: Collects the arrival and burst times for each process.
+Loop:
+Finds the process with the shortest remaining burst time, that has arrived and is incomplete.
+Executes it for one unit of time, updating burst and completion times as necessary.
+Marks a process as complete when its burst time becomes zero.
+Output Phase: Calculates and displays turnaround and waiting times, including their averages.
